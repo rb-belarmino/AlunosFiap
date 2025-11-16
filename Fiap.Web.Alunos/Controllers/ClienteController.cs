@@ -37,7 +37,7 @@ namespace Fiap.Web.Alunos.Controllers
         public IActionResult Create(ClienteModel clienteModel)
         {
             Console.WriteLine("Gravando o cliente");
-            TempData["mensagemSucesso"] = $"O cliente {clienteModel.Nome} foi cadastrado com suceso";
+            TempData["mensagemSucesso"] = $"O cliente {clienteModel.Nome} foi cadastrado com sucesso";
             return RedirectToAction(nameof(Index));
            
         }
@@ -56,7 +56,7 @@ namespace Fiap.Web.Alunos.Controllers
         [HttpPost]
         public IActionResult Edit(ClienteModel clienteModel)
         {
-            TempData["mensagemSucesso"] = $"O cliente {clienteModel.Nome} foi editado com suceso";
+            TempData["mensagemSucesso"] = $"O cliente {clienteModel.Nome} foi editado com sucesso";
             return RedirectToAction(nameof(Index));
         }
 
@@ -70,6 +70,21 @@ namespace Fiap.Web.Alunos.Controllers
             ViewBag.Representantes = selectListRepresentantes;
             var clienteConsultado = Clientes.Where(c => c.ClienteId == id).FirstOrDefault();
             return View(clienteConsultado);
+        }
+        
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            var clienteConsultado = Clientes.Where(c => c.ClienteId == id).FirstOrDefault();
+            if (clienteConsultado == null)
+            {
+                TempData["Mensagem"] = $"O cliente {clienteConsultado.Nome} foi removido com sucesso";
+            }
+            else
+            {
+                TempData["Mensagem"] = $"OPS !!! Cliente inexistente";
+            }
+            return RedirectToAction(nameof(Index));
         }
        
         public static List<RepresentanteModel> GerarRepresentantesMocados()
