@@ -59,6 +59,18 @@ namespace Fiap.Web.Alunos.Controllers
             TempData["mensagemSucesso"] = $"O cliente {clienteModel.Nome} foi editado com suceso";
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpGet]
+        public IActionResult Detail(int id)
+        {
+            var selectListRepresentantes =
+                new SelectList(Representantes,
+                    nameof(RepresentanteModel.RepresentanteId),
+                    nameof(RepresentanteModel.NomeRepresentante));
+            ViewBag.Representantes = selectListRepresentantes;
+            var clienteConsultado = Clientes.Where(c => c.ClienteId == id).FirstOrDefault();
+            return View(clienteConsultado);
+        }
        
         public static List<RepresentanteModel> GerarRepresentantesMocados()
         {

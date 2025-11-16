@@ -94,3 +94,4 @@
 /Users/rodrigobelarmino/Documents/DEV/FIAP/framework-net/Fiap.Web.Alunos/Fiap.Web.Alunos/obj/Debug/net9.0/Fiap.Web.Alunos.pdb
 /Users/rodrigobelarmino/Documents/DEV/FIAP/framework-net/Fiap.Web.Alunos/Fiap.Web.Alunos/obj/Debug/net9.0/Fiap.Web.Alunos.genruntimeconfig.cache
 /Users/rodrigobelarmino/Documents/DEV/FIAP/framework-net/Fiap.Web.Alunos/Fiap.Web.Alunos/obj/Debug/net9.0/ref/Fiap.Web.Alunos.dll
+/Users/rodrigobelarmino/Documents/DEV/FIAP/framework-net/Fiap.Web.Alunos/Fiap.Web.Alunos/obj/Debug/net9.0/Fiap.Web.Alunos.sourcelink.json
