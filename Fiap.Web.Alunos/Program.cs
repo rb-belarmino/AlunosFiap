@@ -1,4 +1,17 @@
+#region 
+using Fiap.Web.Alunos.Data.Contexts;
+using Microsoft.EntityFrameworkCore;
+#endregion
+
 var builder = WebApplication.CreateBuilder(args);
+
+#region
+
+var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
+builder.Services.AddDbContext<DatabaseContext>(
+    opt => opt.UseOracle(connectionString).EnableSensitiveDataLogging(true)
+);
+#endregion
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
