@@ -128,3 +128,5 @@
 /Users/rodrigobelarmino/Documents/DEV/FIAP/framework-net/Fiap.Web.Alunos/Fiap.Web.Alunos.Tests/obj/Debug/net9.0/Fiap.Web.Alunos.Tests.pdb
 /Users/rodrigobelarmino/Documents/DEV/FIAP/framework-net/Fiap.Web.Alunos/Fiap.Web.Alunos.Tests/obj/Debug/net9.0/Fiap.Web.Alunos.Tests.genruntimeconfig.cache
 /Users/rodrigobelarmino/Documents/DEV/FIAP/framework-net/Fiap.Web.Alunos/Fiap.Web.Alunos.Tests/obj/Debug/net9.0/ref/Fiap.Web.Alunos.Tests.dll
+/Users/rodrigobelarmino/Documents/DEV/FIAP/framework-net/Fiap.Web.Alunos/Fiap.Web.Alunos.Tests/bin/Debug/net9.0/Castle.Core.dll
+/Users/rodrigobelarmino/Documents/DEV/FIAP/framework-net/Fiap.Web.Alunos/Fiap.Web.Alunos.Tests/bin/Debug/net9.0/Moq.dll
