@@ -1,42 +1,38 @@
+using Fiap.Web.Alunos.Data.Contexts;
 using Fiap.Web.Alunos.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+
 namespace Fiap.Web.Alunos.Controllers
 {
     public class ClienteController : Controller
     {
-        public IList<ClienteModel> Clientes { get; set; }
-        public IList<RepresentanteModel> Representantes { get; set; } 
-        public ClienteController()
+        private readonly DatabaseContext _context;
+        public ClienteController(DatabaseContext context)
         {
-            Clientes = GerarClientesMocados();
-            Representantes = GerarRepresentantesMocados();
+            _context = context;
         }
         public IActionResult Index()
         {
-            if (Clientes == null)
-            {
-                Clientes = new List<ClienteModel>();
-            }
-            return View(Clientes);
+            var clientes = _context.Clientes.Include(c => c.Representante).ToList();
+            
+            return View(clientes);
         }
         [HttpGet]
         public IActionResult Create()
         {
-            Console.WriteLine("Executou a Action Cadastrar()");
-            var selectListRepresentantes =
-                new SelectList(Representantes,
-                                nameof(RepresentanteModel.RepresentanteId),
-                                nameof(RepresentanteModel.NomeRepresentante));
-           
-            ViewBag.Representantes = selectListRepresentantes;
-           
-            return View(new ClienteModel());
+            ViewBag.Representantes = 
+                new SelectList(_context.Representantes.ToList(),
+                    "RepresentanteId",
+                    "NomeRepresentante");
+            return View();
         }
         [HttpPost]
         public IActionResult Create(ClienteModel clienteModel)
         {
-            Console.WriteLine("Gravando o cliente");
+            _context.Clientes.Add(clienteModel);
+            _context.SaveChanges();
             TempData["mensagemSucesso"] = $"O cliente {clienteModel.Nome} foi cadastrado com sucesso";
             return RedirectToAction(nameof(Index));
            
@@ -44,18 +40,27 @@ namespace Fiap.Web.Alunos.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var selectListRepresentantes = 
-                new SelectList(Representantes,
-                    nameof(RepresentanteModel.RepresentanteId),
-                    nameof(RepresentanteModel.NomeRepresentante));
-            ViewBag.Representantes = selectListRepresentantes;
-            var clienteConsultado = Clientes.Where(c => c.ClienteId == id).FirstOrDefault();
-            return View(clienteConsultado);
+            var cliente = _context.Clientes.Find(id);
+            if (cliente == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                ViewBag.Representantes = 
+                    new SelectList(_context.Representantes.ToList(),
+                        "RepresentanteId",
+                        "NomeRepresentante",
+                        cliente.RepresentanteId);
+                return View(cliente);
+            }
         }
 
         [HttpPost]
         public IActionResult Edit(ClienteModel clienteModel)
         {
+            _context.Clientes.Update(clienteModel);
+            _context.SaveChanges();
             TempData["mensagemSucesso"] = $"O cliente {clienteModel.Nome} foi editado com sucesso";
             return RedirectToAction(nameof(Index));
         }
@@ -63,69 +68,35 @@ namespace Fiap.Web.Alunos.Controllers
         [HttpGet]
         public IActionResult Detail(int id)
         {
-            var selectListRepresentantes =
-                new SelectList(Representantes,
-                    nameof(RepresentanteModel.RepresentanteId),
-                    nameof(RepresentanteModel.NomeRepresentante));
-            ViewBag.Representantes = selectListRepresentantes;
-            var clienteConsultado = Clientes.Where(c => c.ClienteId == id).FirstOrDefault();
-            return View(clienteConsultado);
+            var cliente = _context.Clientes
+                .Include(c => c.Representante)
+                .FirstOrDefault(c => c.ClienteId == id);
+            if (cliente == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return View(cliente);
+            }
         }
         
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            var clienteConsultado = Clientes.Where(c => c.ClienteId == id).FirstOrDefault();
-            if (clienteConsultado == null)
+            var cliente = _context.Clientes.Find(id);
+
+            if (cliente != null)
             {
-                TempData["Mensagem"] = $"O cliente {clienteConsultado.Nome} foi removido com sucesso";
+                _context.Clientes.Remove(cliente);
+                _context.SaveChanges();
+                TempData["mensagemSucesso"] = $"O cliente {cliente.Nome} foi excluído com sucesso";
             }
             else
             {
-                TempData["Mensagem"] = $"OPS !!! Cliente inexistente";
+                TempData["mensagemErro"] = "Cliente não encontrado";
             }
             return RedirectToAction(nameof(Index));
-        }
-       
-        public static List<RepresentanteModel> GerarRepresentantesMocados()
-        {
-            var representantes = new List<RepresentanteModel>
-            {
-                new RepresentanteModel { RepresentanteId = 1, NomeRepresentante = "Representante 1", Cpf = "111.111.111-11" },
-                new RepresentanteModel { RepresentanteId = 2, NomeRepresentante = "Representante 2", Cpf = "222.222.222-22" },
-                new RepresentanteModel { RepresentanteId = 3, NomeRepresentante = "Representante 3", Cpf = "333.333.333-33" },
-                new RepresentanteModel { RepresentanteId = 4, NomeRepresentante = "Representante 4", Cpf = "444.444.444-44" },
-                new RepresentanteModel { RepresentanteId = 5, NomeRepresentante = "Representante 5", Cpf = "555.555.555-55" },
-                new RepresentanteModel { RepresentanteId = 6, NomeRepresentante = "Representante 6", Cpf = "666.666.666-66" },
-                new RepresentanteModel { RepresentanteId = 7, NomeRepresentante = "Representante 7", Cpf = "777.777.777-77" },
-            };
-            return representantes;
-        }
-       
-        public static List<ClienteModel> GerarClientesMocados()
-        {
-            var clientes = new List<ClienteModel>();
-            for (int i = 1; i <= 5; i++)
-            {
-                var cliente = new ClienteModel
-                {
-                    ClienteId = i,
-                    Nome = "Cliente" + i,
-                    Sobrenome = "Sobrenome" + i,
-                    Email = "cliente" + i + "@example.com",
-                    DataNascimento = DateTime.Now.AddYears(-30),
-                    Observacao = "Observação do cliente " + i,
-                    RepresentanteId = i,
-                    Representante = new RepresentanteModel
-                    {
-                        RepresentanteId = i,
-                        NomeRepresentante = "Representante" + i,
-                        Cpf = "00000000191"
-                    }
-                };
-                clientes.Add(cliente);
-            }
-            return clientes;
         }
     }
 }

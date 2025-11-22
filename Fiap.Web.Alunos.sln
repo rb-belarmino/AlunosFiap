@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fiap.Web.Alunos", "Fiap.Web.Alunos\Fiap.Web.Alunos.csproj", "{BF9E1C14-9387-4C13-9121-9BB69ABB1A20}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fiap.Web.Alunos.Tests", "Fiap.Web.Alunos.Tests\Fiap.Web.Alunos.Tests.csproj", "{8C275AF7-A0D4-4523-B64E-5A69733E4E57}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{BF9E1C14-9387-4C13-9121-9BB69ABB1A20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF9E1C14-9387-4C13-9121-9BB69ABB1A20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF9E1C14-9387-4C13-9121-9BB69ABB1A20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C275AF7-A0D4-4523-B64E-5A69733E4E57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C275AF7-A0D4-4523-B64E-5A69733E4E57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C275AF7-A0D4-4523-B64E-5A69733E4E57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C275AF7-A0D4-4523-B64E-5A69733E4E57}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
