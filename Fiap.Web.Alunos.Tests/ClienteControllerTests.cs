@@ -2,6 +2,7 @@ using AutoMapper;
 using Fiap.Web.Alunos.Controllers;
 using Fiap.Web.Alunos.Data.Contexts;
 using Fiap.Web.Alunos.Models;
+using Fiap.Web.Alunos.Services; // Adicione o using para o serviço
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -12,6 +13,7 @@ namespace Fiap.Web.Alunos.Tests
     {
         private readonly Mock<DatabaseContext> _mockContext;
         private readonly Mock<IMapper> _mockMapper;
+        private readonly Mock<IClienteService> _mockService; // Adiciona o mock para o IClienteService
         private readonly ClienteController _controller;
         private readonly DbSet<ClienteModel> _mockSet;
 
@@ -19,11 +21,13 @@ namespace Fiap.Web.Alunos.Tests
         {
             _mockContext = new Mock<DatabaseContext>();
             _mockMapper = new Mock<IMapper>();
+            _mockService = new Mock<IClienteService>(); // Inicializa o mock do IClienteService
             _mockSet = MockDbSet();
-            
+
             _mockContext.Setup(m => m.Clientes).Returns(_mockSet);
-            
-            _controller = new ClienteController(_mockContext.Object, _mockMapper.Object);
+
+            // Passa o objeto mock do IClienteService para o construtor
+            _controller = new ClienteController(_mockContext.Object, _mockMapper.Object, _mockService.Object);
         }
 
         private DbSet<ClienteModel> MockDbSet()
@@ -39,15 +43,18 @@ namespace Fiap.Web.Alunos.Tests
             mockSet.As<IQueryable<ClienteModel>>().Setup(m => m.Expression).Returns(data.Expression);
             mockSet.As<IQueryable<ClienteModel>>().Setup(m => m.ElementType).Returns(data.ElementType);
             mockSet.As<IQueryable<ClienteModel>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
-            
+
             return mockSet.Object;
         }
 
         [Fact]
         public void Index_ReturnsViewResult_WithListOfClients()
         {
-            var result = _controller.Index();
+            // Configura o mock do serviço para retornar a lista de clientes
+            _mockService.Setup(s => s.ListarClientes()).Returns(_mockContext.Object.Clientes.ToList());
             
+            var result = _controller.Index();
+
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<IEnumerable<ClienteModel>>(viewResult.Model);
             Assert.Equal(2, model.Count());
@@ -64,10 +71,14 @@ namespace Fiap.Web.Alunos.Tests
             emptyMockSet.As<IQueryable<ClienteModel>>().Setup(m => m.GetEnumerator()).Returns(emptyData.GetEnumerator());
 
             _mockContext.Setup(m => m.Clientes).Returns(emptyMockSet.Object);
-            var controller = new ClienteController(_mockContext.Object, _mockMapper.Object);
+            
+            // Configura o mock do serviço para retornar uma lista vazia
+            _mockService.Setup(s => s.ListarClientes()).Returns(new List<ClienteModel>());
+            
+            var controller = new ClienteController(_mockContext.Object, _mockMapper.Object, _mockService.Object);
 
             var result = controller.Index();
-            
+
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<IEnumerable<ClienteModel>>(viewResult.Model);
             Assert.Empty(model);
@@ -76,8 +87,9 @@ namespace Fiap.Web.Alunos.Tests
         [Fact]
         public void Index_ThrowsException_WhenDatabaseFails()
         {
-            _mockContext.Setup(m => m.Clientes).Throws(new System.Exception("Database error"));
-            
+            // Configura o mock do serviço para lançar uma exceção
+            _mockService.Setup(s => s.ListarClientes()).Throws(new System.Exception("Database error"));
+
             Assert.Throws<System.Exception>(() => _controller.Index());
         }
     }

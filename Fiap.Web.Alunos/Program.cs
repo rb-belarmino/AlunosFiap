@@ -1,8 +1,10 @@
 #region
 using AutoMapper;
 using Fiap.Web.Alunos.Data.Contexts;
+using Fiap.Web.Alunos.Data.Repository;
 using Fiap.Web.Alunos.Logging;
 using Fiap.Web.Alunos.Models;
+using Fiap.Web.Alunos.Services;
 using Fiap.Web.Alunos.ViewModels;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +19,19 @@ var connectionString = builder.Configuration.GetConnectionString("DatabaseConnec
 builder.Services.AddDbContext<DatabaseContext>(
     opt => opt.UseOracle(connectionString).EnableSensitiveDataLogging(true)
 );
+
+#endregion
+
+#region Registro IserviceCollection
+
+builder.Services.AddSingleton<ICustomLogger, MockLogger>();
+
+#endregion
+
+#region Registro de Serviços e Repositorio
+
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IClienteService, ClienteService>();
 
 #endregion
 
