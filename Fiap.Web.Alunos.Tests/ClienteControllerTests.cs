@@ -11,19 +11,18 @@ namespace Fiap.Web.Alunos.Tests
     public class ClienteControllerTests
     {
         private readonly Mock<DatabaseContext> _mockContext;
-        private readonly Mock<IMapper> _mockMapper; // Adiciona o mock para o IMapper
+        private readonly Mock<IMapper> _mockMapper; /
         private readonly ClienteController _controller;
         private readonly DbSet<ClienteModel> _mockSet;
 
         public ClienteControllerTests()
         {
             _mockContext = new Mock<DatabaseContext>();
-            _mockMapper = new Mock<IMapper>(); // Inicializa o mock do IMapper
+            _mockMapper = new Mock<IMapper>();
             _mockSet = MockDbSet();
             
             _mockContext.Setup(m => m.Clientes).Returns(_mockSet);
             
-            // Passa o objeto mock do IMapper para o construtor
             _controller = new ClienteController(_mockContext.Object, _mockMapper.Object);
         }
 
