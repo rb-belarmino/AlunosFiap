@@ -1,8 +1,11 @@
-#region 
-
+#region
+using AutoMapper;
 using Fiap.Web.Alunos.Data.Contexts;
+using Fiap.Web.Alunos.Logging;
+using Fiap.Web.Alunos.Models;
+using Fiap.Web.Alunos.ViewModels;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore;
-
 #endregion
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +17,13 @@ var connectionString = builder.Configuration.GetConnectionString("DatabaseConnec
 builder.Services.AddDbContext<DatabaseContext>(
     opt => opt.UseOracle(connectionString).EnableSensitiveDataLogging(true)
 );
+
+#endregion
+
+#region AutoMapper
+
+// Registra o AutoMapper e busca por perfis no assembly atual
+builder.Services.AddAutoMapper(cfg => {}, typeof(Program).Assembly);
 
 #endregion
 

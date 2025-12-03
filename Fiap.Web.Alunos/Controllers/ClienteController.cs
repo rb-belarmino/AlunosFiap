@@ -1,3 +1,4 @@
+using AutoMapper;
 using Fiap.Web.Alunos.Data.Contexts;
 using Fiap.Web.Alunos.Models;
 using Fiap.Web.Alunos.ViewModels;
@@ -10,9 +11,11 @@ namespace Fiap.Web.Alunos.Controllers
     public class ClienteController : Controller
     {
         private readonly DatabaseContext _context;
-        public ClienteController(DatabaseContext context)
+        private readonly IMapper _mapper;
+        public ClienteController(DatabaseContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
         public IActionResult Index()
         {
@@ -34,19 +37,10 @@ namespace Fiap.Web.Alunos.Controllers
         {
             if (ModelState.IsValid)
             {
-                var cliente = new ClienteModel
-                {
-                    ClienteId = viewModel.ClienteId,
-                    Nome = viewModel.Nome,
-                    Sobrenome = viewModel.Sobrenome,
-                    Email = viewModel.Email,
-                    DataNascimento = viewModel.DataNascimento,
-                    Observacao = viewModel.Observacao,
-                    RepresentanteId = viewModel.RepresentanteId
-                };
+                var cliente = _mapper.Map<ClienteModel>(viewModel);
                 _context.Clientes.Add(cliente);
                 _context.SaveChanges();
-                TempData["mensagemSucesso"] = $"O cliente {viewModel.Nome} foi cadastrado com sucesso";
+                TempData["mensagemSucesso"] = $"O cliente {cliente.Nome} foi criado com sucesso";
                 return RedirectToAction(nameof(Index));
             }
             else
